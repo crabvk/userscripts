@@ -12,7 +12,7 @@
 // @grant       GM_deleteValue
 // @downloadURL https://raw.githubusercontent.com/vyachkonovalov/userscripts/master/soundcloud-restore-playback.user.js
 // @supportURL  https://t.me/vyachkonovalov
-// @homepageURL https://github.com/vyachkonovalov/vyachkonovalov/userscripts
+// @homepageURL https://github.com/vyachkonovalov/userscripts
 // ==/UserScript==
 
 let lastKey
