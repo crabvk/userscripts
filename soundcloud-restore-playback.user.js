@@ -2,7 +2,7 @@
 // @name        SoundCloud Restore Playback
 // @namespace   https://github.com/vyachkonovalov
 // @description Saves/restores playback position on SoundCloud.com
-// @version     0.2.0
+// @version     0.2.1
 // @author      Vyacheslav Konovalov
 // @match       https://soundcloud.com/*
 // @license     MIT
@@ -31,8 +31,6 @@ const restorePlayback = (position, wrapper) => {
   wrapper.dispatchEvent(new MouseEvent('mouseup', args))
 }
 
-const getKey = player => player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
-
 const observeProgress = player => {
   let isInit = true
   const wrapper = player.querySelector('.playbackTimeline__progressWrapper')
@@ -43,13 +41,13 @@ const observeProgress = player => {
         const isPositionUpdate = !isInitRestore && mutation.attributeName === 'aria-valuenow'
 
         if (isInitRestore || isPositionUpdate) {
-          const key = getKey(player)
+          const key = player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
           let position
 
           if (isPositionUpdate && key === lastKey) {
             position = parseInt(mutation.target.getAttribute('aria-valuenow'))
             if (position > 0 && position % 5 === 0 || Math.abs(lastPosition - position) > 4) {
-              GM_setValue(getKey(player), position)
+              GM_setValue(key, position)
             }
           } else {
             position = GM_getValue(key) || 0
