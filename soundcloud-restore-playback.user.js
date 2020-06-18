@@ -2,7 +2,7 @@
 // @name        SoundCloud Restore Playback
 // @namespace   https://github.com/vyachkonovalov
 // @description Saves/restores playback position on SoundCloud.com
-// @version     0.2.1
+// @version     0.3.1
 // @author      Vyacheslav Konovalov
 // @match       https://soundcloud.com/*
 // @license     MIT
@@ -18,13 +18,27 @@
 let lastKey
 let lastPosition
 
-const restorePlayback = (position, wrapper) => {
-  const length = parseInt(wrapper.getAttribute('aria-valuemax'))
+const findLast = (array, cond) => {
+  let i = array.length - 1
+  for (; i >= 0; i--) {
+    if (cond(array[i])) {
+      return array[i]
+    }
+  }
+}
+
+/**
+ * Clicks on the timeline according to factor.
+ *
+ * @param {number} factor Current position divided by track duration.
+ * @param {number} wrapper The timeline wrapper element on which to click.
+ */
+const restorePlayback = (factor, wrapper) => {
   const rect = wrapper.getBoundingClientRect()
   const args = {
     view: unsafeWindow,
     bubbles: true,
-    clientX: rect.x + Math.floor(rect.width / length * position),
+    clientX: rect.x + Math.floor(rect.width * factor),
     clientY: rect.y + 10
   }
   wrapper.dispatchEvent(new MouseEvent('mousedown', args))
@@ -33,45 +47,50 @@ const restorePlayback = (position, wrapper) => {
 
 const observeProgress = player => {
   let isInit = true
-  const wrapper = player.querySelector('.playbackTimeline__progressWrapper')
+  let isRestore = false
+  const cond = m => isInit ? m.attributeName === 'aria-valuemax' : m.attributeName === 'aria-valuenow'
   new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-      if (mutation.type === 'attributes') {
-        const isInitRestore = isInit && mutation.attributeName === 'aria-valuemax'
-        const isPositionUpdate = !isInitRestore && mutation.attributeName === 'aria-valuenow'
+    const mutation = findLast(mutations, m => m.type === 'attributes' && cond(m))
+    if (mutation === undefined) {
+      return
+    }
 
-        if (isInitRestore || isPositionUpdate) {
-          const key = player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
-          let position
+    const duration = parseInt(mutation.target.getAttribute('aria-valuemax'))
+    // Skip tracks shorter than 10 minutes
+    if (duration < 600) {
+      return
+    }
 
-          if (isPositionUpdate && key === lastKey) {
-            position = parseInt(mutation.target.getAttribute('aria-valuenow'))
-            if (position > 0 && position % 5 === 0 || Math.abs(lastPosition - position) > 4) {
-              GM_setValue(key, position)
-            }
-          } else {
-            position = GM_getValue(key) || 0
-            if (position > 0) {
-              const length = parseInt(mutation.target.getAttribute('aria-valuemax'))
-              // Do not restore position from last 5% of the track,
-              // but this 5% can't be lower than 10 seconds or greater than 30 seconds
-              const limit = length - Math.min(Math.max(length / 100 * 5, 10), 30)
-              if (position < limit) {
-                restorePlayback(position, mutation.target)
-              } else {
-                GM_deleteValue(key)
-              }
-            }
-            isInit = false
-          }
+    const key = player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
+    let position
 
-          lastKey = key
-          lastPosition = position
-          break
+    if (!isInit && key === lastKey) {
+      // Ignore position change triggered by restorePlayback function
+      if (isRestore) {
+        isRestore = false
+        return
+      }
+      position = parseInt(mutation.target.getAttribute('aria-valuenow'))
+      if (position > 0 && position % 5 === 0 || Math.abs(lastPosition - position) > 4) {
+        GM_setValue(key, position)
+      }
+    } else {
+      isInit = false
+      position = GM_getValue(key) || 0
+      if (position > 0) {
+        // Do not restore position from last 30 seconds of the track
+        if (position < duration - 30) {
+          isRestore = true
+          restorePlayback(position / duration, mutation.target)
+        } else {
+          GM_deleteValue(key)
         }
       }
     }
-  }).observe(wrapper, { attributes: true })
+
+    lastKey = key
+    lastPosition = position
+  }).observe(player.querySelector('.playbackTimeline__progressWrapper'), { attributes: true })
 }
 
 const appObserver = new MutationObserver(mutations => {
@@ -88,5 +107,6 @@ const appObserver = new MutationObserver(mutations => {
   }
 })
 
+// Wait for div.playControls to appear on the page first
 const app = document.body.querySelector('#app')
 appObserver.observe(app, { childList: true })
