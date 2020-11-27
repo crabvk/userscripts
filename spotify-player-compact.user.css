@@ -1,0 +1,119 @@
+/* ==UserStyle==
+@name         Spotify Player Compact
+@description  Makes spotify player single row and changes player buttons order
+@version      0.1.0
+@license      MIT
+@namespace    github.com/crabvk
+@author       Vyacheslav Konovalov <f4f7l1hvr@relay.firefox.com>
+@updateURL    https://raw.githubusercontent.com/crabvk/userscripts/master/spotify-player-compact.user.css
+@homepageURL  https://github.com/crabvk/userscripts
+@preprocessor default
+==/UserStyle== */
+
+@-moz-document domain("open.spotify.com") {
+/*** Hide useless elements ***/
+
+/* UPGRADE button */
+.Root__top-bar button[title="Upgrade to Premium"],
+/* Spotify logo */
+.Root__nav-bar > nav > div[role="banner"],
+/* Install App button and expanded cover art (same selector for both) */
+.Root__nav-bar > nav > div:last-of-type {
+    display: none;
+}
+
+/*** Change player size ***/
+
+.now-playing-bar {
+    height: 56px;
+}
+
+.now-playing-bar > * {
+    padding: 0 !important;
+}
+
+.now-playing-bar > [class^=now-playing-bar__] {
+    width: initial;
+    max-width: initial;
+    flex-grow: 1;
+}
+
+.now-playing-bar > .now-playing-bar__center {
+    flex-grow: 2;
+}
+
+/*** Change player controls order ***/
+
+.player-controls {
+    flex-direction: row;
+}
+
+.player-controls__buttons {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 0;
+    margin-right: 1rem;
+}
+
+.player-controls__buttons > .control-button-wrapper,
+.player-controls__buttons > button {
+    grid-row: 1;
+}
+
+/* Shuffle */
+.player-controls__buttons > button:nth-of-type(1) {
+    grid-column: 4;
+}
+
+/* Previous */
+.player-controls__buttons > button:nth-of-type(2) {
+    grid-column: 1;
+}
+
+/* Play/Pause */
+.player-controls__buttons > button:nth-of-type(3) {
+    grid-column: 2;
+}
+
+/* Next */
+.player-controls__buttons > .control-button-wrapper:nth-of-type(1) {
+    grid-column: 3;
+}
+
+/* Repeat */
+.player-controls__buttons > .control-button-wrapper:nth-of-type(2) {
+    grid-column: 5;
+}
+
+/*** Fix controls cursor ***/
+
+[class^=now-playing-bar__] .control-button > button,
+[class^=now-playing-bar__] button.control-button,
+[class^=now-playing-bar__] .player-controls__buttons > button,
+.playback-bar > .progress-bar,
+.volume-bar > .progress-bar,
+.progress-bar__slider {
+    cursor: pointer;
+}
+
+/*** Fix controls vertical alignment ***/
+
+.player-controls__buttons button:before,
+.now-playing-bar__right button.control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*** Remove "Expand" cover art button, always show cover art in Player ***/
+
+.now-playing > div:first-of-type > button:first-of-type {
+    display: none;
+}
+
+.now-playing-bar__left > .now-playing {
+    --webkit-transform: none !important;
+    transform: none !important;
+}
+}

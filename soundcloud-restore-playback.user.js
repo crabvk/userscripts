@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        SoundCloud Restore Playback
-// @namespace   https://github.com/vyachkonovalov
 // @description Saves/restores playback position on SoundCloud.com
+// @namespace   https://github.com/crabvk
 // @version     0.3.1
 // @author      Vyacheslav Konovalov
 // @match       https://soundcloud.com/*
@@ -10,9 +10,8 @@
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
-// @downloadURL https://raw.githubusercontent.com/vyachkonovalov/userscripts/master/soundcloud-restore-playback.user.js
-// @supportURL  https://t.me/vyachkonovalov
-// @homepageURL https://github.com/vyachkonovalov/userscripts
+// @downloadURL https://raw.githubusercontent.com/crabvk/userscripts/master/soundcloud-restore-playback.user.js
+// @homepageURL https://github.com/crabvk/userscripts
 // ==/UserScript==
 
 let lastKey
