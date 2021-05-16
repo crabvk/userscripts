@@ -39,7 +39,7 @@ After
 
 1. Install [Violentmonkey](https://violentmonkey.github.io/get-it/) browser extension
 2. Open direct link for a script (for example https://raw.githubusercontent.com/crabvk/userscripts/master/soundcloud-restore-playback.user.js), it'll open Violentmonkey
-3. Press "Confirm installation" in the right top corner
+3. Press "Confirm installation" button
 
 # How to install user style
 
