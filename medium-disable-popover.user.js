@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Medium Disable Popover
-// @description Disables popover (with highlight tool and tweet) for selected text on Medium
+// @description Disables popover (with highlight tool and tweet) for selected text and marks on Medium
 // @namespace   https://github.com/crabvk
 // @version     0.1.0
 // @author      Vyacheslav Konovalov
@@ -62,4 +62,24 @@
 // ==/UserScript==
 // List of domains copied from https://github.com/manojVivek/medium-unlimited/blob/master/manifest.json
 
+const sleep = millisecs => new Promise(resolve => setTimeout(resolve, millisecs))
+
 document.body.onmouseup = event => event.stopPropagation()
+
+window.addEventListener('load', async () => {
+    let i = 0;
+    while (true) {
+        const marks = document.querySelectorAll('mark');
+        marks.forEach(el => {
+            el.style.cursor = 'initial'
+            el.parentNode.innerHTML += ''
+        })
+
+        if (marks.length > 0 || i > 10) {
+            break
+        }
+
+        i += 1
+        await sleep(500)
+    }
+})

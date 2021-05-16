@@ -19,7 +19,7 @@ Saves/restores playback position on SoundCloud.com
 
 # Medium Disable Popover
 
-Disables popover (with highlight tool and tweet) for selected text on Medium
+Disables popover (with highlight tool and tweet) for selected text and marks on Medium
 
 # Spotify Player Compact
 
