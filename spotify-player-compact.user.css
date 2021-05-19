@@ -18,28 +18,19 @@
 /* Spotify logo */
 .Root__nav-bar > nav > div[role="banner"],
 /* Install App button and expanded cover art (same selector for both) */
-.Root__nav-bar > nav > div:last-of-type {
+.Root__nav-bar > div:first-child > div:last-of-type {
+    display: none;
+}
+
+/* Remove Expand button (shows when hover on cover) */
+.Root__now-playing-bar button[aria-label="Expand"] {
     display: none;
 }
 
 /*** Change player size ***/
 
-.now-playing-bar {
+.Root__now-playing-bar > footer > div {
     height: 56px;
-}
-
-.now-playing-bar > * {
-    padding: 0 !important;
-}
-
-.now-playing-bar > [class^=now-playing-bar__] {
-    width: initial;
-    max-width: initial;
-    flex-grow: 1;
-}
-
-.now-playing-bar > .now-playing-bar__center {
-    flex-grow: 2;
 }
 
 /*** Change player controls order ***/
@@ -88,31 +79,18 @@
 
 /*** Fix controls cursor ***/
 
-[class^=now-playing-bar__] .control-button > button,
-[class^=now-playing-bar__] button.control-button,
-[class^=now-playing-bar__] .player-controls__buttons > button,
-.playback-bar > .progress-bar,
-.volume-bar > .progress-bar,
+.Root__now-playing-bar button[role="switch"],
+.Root__now-playing-bar button.control-button,
+.Root__now-playing-bar .player-controls__buttons > button,
+.playback-bar .progress-bar,
+.volume-bar .progress-bar,
 .progress-bar__slider {
     cursor: pointer;
 }
 
-/*** Fix controls vertical alignment ***/
+/*** Always show cover art in Player ***/
 
-.player-controls__buttons button:before,
-.now-playing-bar__right button.control-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/*** Remove "Expand" cover art button, always show cover art in Player ***/
-
-.now-playing > div:first-of-type > button:first-of-type {
-    display: none;
-}
-
-.now-playing-bar__left > .now-playing {
+.Root__now-playing-bar div[role="contentinfo"] {
     --webkit-transform: none !important;
     transform: none !important;
 }
