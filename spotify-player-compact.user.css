@@ -16,7 +16,7 @@
 /* UPGRADE button */
 .Root__top-bar button[title="Upgrade to Premium"],
 /* Spotify logo */
-.Root__nav-bar > nav > div[role="banner"],
+.Root__nav-bar div[role="banner"],
 /* Install App button and expanded cover art (same selector for both) */
 .Root__nav-bar > div:first-child > div:last-of-type {
     display: none;
