@@ -67,12 +67,18 @@ const sleep = millisecs => new Promise(resolve => setTimeout(resolve, millisecs)
 document.body.onmouseup = event => event.stopPropagation()
 
 window.addEventListener('load', async () => {
+    const style = document.createElement('style')
+    style.textContent = 'mark { cursor: initial !important; }'
+    document.head.appendChild(style)
+
     let i = 0;
     while (true) {
-        const marks = document.querySelectorAll('mark');
+        const marks = document.querySelectorAll('mark')
+
         marks.forEach(el => {
-            el.style.cursor = 'initial'
-            el.parentNode.innerHTML += ''
+            if (el.parentNode) {
+                el.parentNode.innerHTML += ''
+            }
         })
 
         if (marks.length > 0 || i > 10) {
