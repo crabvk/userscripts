@@ -2,11 +2,12 @@
 // @name        SoundCloud Restore Playback
 // @description Saves/restores playback position on SoundCloud.com
 // @namespace   https://github.com/crabvk
-// @version     0.3.2
+// @version     0.4.0
 // @author      Vyacheslav Konovalov
 // @match       https://soundcloud.com/*
 // @license     MIT
 // @noframes
+// @run-at      document-idle
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -14,88 +15,111 @@
 // @homepageURL https://github.com/crabvk/userscripts
 // ==/UserScript==
 
-/**
- * Finds the last array element that matches the condition.
- *
- * @param {Array} array Any array.
- * @param {number} cond Condition to match against each array element.
- */
-const findLast = (array, cond) => {
-    let i = array.length - 1
-    for (; i >= 0; i--) {
-        if (cond(array[i])) {
-            return array[i]
-        }
-    }
-}
+const getKey = (player) =>
+  player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
+
+const getTimeline = (player) => player.querySelector('.playbackTimeline__progressWrapper')
 
 /**
  * Clicks on the timeline according to factor.
  *
+ * @param {number} timeline The timeline wrapper element on which to click.
  * @param {number} factor Current position divided by track duration.
- * @param {number} wrapper The timeline wrapper element on which to click.
  */
-const restorePlayback = (factor, wrapper) => {
-    const rect = wrapper.getBoundingClientRect()
-    const args = {
-        view: unsafeWindow,
-        bubbles: true,
-        clientX: rect.x + Math.floor(rect.width * factor),
-        clientY: rect.y + 10
+function clickTimeline(timeline, factor) {
+  const rect = timeline.getBoundingClientRect()
+  const args = {
+    view: unsafeWindow,
+    bubbles: true,
+    clientX: rect.x + Math.floor(rect.width * factor),
+    clientY: rect.y + 10,
+  }
+  timeline.dispatchEvent(new MouseEvent('mousedown', args))
+  timeline.dispatchEvent(new MouseEvent('mouseup', args))
+}
+
+/**
+ * Restores timeline position.
+ */
+function restorePlayback(player) {
+  const timeline = getTimeline(player)
+  const duration = Number(timeline.getAttribute('aria-valuemax'))
+  // Skip tracks shorter than 5 minutes.
+  if (duration < 300) {
+    return
+  }
+  const key = getKey(player)
+  const position = GM_getValue(key) || 0
+  if (position > 0) {
+    // Do not restore position from the last 30 seconds of the track.
+    if (position < duration - 30) {
+      clickTimeline(timeline, position / duration)
+    } else {
+      GM_deleteValue(key)
     }
-    wrapper.dispatchEvent(new MouseEvent('mousedown', args))
-    wrapper.dispatchEvent(new MouseEvent('mouseup', args))
+  }
+  return [key, position]
 }
 
-const observeProgress = player => {
-    let isInit = true
-    let isRestore = false
-    let lastKey, lastPosition
-    const cond = m => isInit ? m.attributeName === 'aria-valuemax' : m.attributeName === 'aria-valuenow'
+function observePlayback(player) {
+  let lastKey
+  let lastPosition = -42
+  let isRestore = false
 
-    new MutationObserver(mutations => {
-        const mutation = findLast(mutations, m => m.type === 'attributes' && cond(m))
-        if (mutation === undefined) {
-            return
-        }
+  new MutationObserver((mutations) => {
+    const mutation = mutations.findLast(
+      (m) => m.type === 'attributes' && m.attributeName === 'aria-valuenow'
+    )
+    if (mutation === undefined) {
+      return
+    }
 
-        const duration = parseInt(mutation.target.getAttribute('aria-valuemax'))
-        // Skip tracks shorter than 10 minutes
-        if (duration < 600) {
-            return
-        }
+    const duration = Number(mutation.target.getAttribute('aria-valuemax'))
+    // Skip tracks shorter than 5 minutes.
+    if (duration < 300) {
+      return
+    }
 
-        const key = player.querySelector('.playbackSoundBadge__titleLink').getAttribute('href')
-        let position
-
-        if (!isInit && key === lastKey) {
-            // Ignore position change triggered by restorePlayback function
-            if (isRestore) {
-                isRestore = false
-                return
-            }
-            position = parseInt(mutation.target.getAttribute('aria-valuenow'))
-            if (position > 0 && position % 5 === 0 || Math.abs(lastPosition - position) > 4) {
-                GM_setValue(key, position)
-            }
-        } else {
-            isInit = false
-            position = GM_getValue(key) || 0
-            if (position > 0) {
-                // Do not restore position from last 30 seconds of the track
-                if (position < duration - 30) {
-                    isRestore = true
-                    restorePlayback(position / duration, mutation.target)
-                } else {
-                    GM_deleteValue(key)
-                }
-            }
-        }
-
-        lastKey = key
-        lastPosition = position
-    }).observe(player.querySelector('.playbackTimeline__progressWrapper'), { attributes: true })
+    let key = getKey(player)
+    if (lastKey === undefined) {
+      lastKey = key
+    }
+    let position
+    // Listening to the same track.
+    if (lastKey === key) {
+      if (isRestore) {
+        isRestore = false
+        return
+      }
+      position = Number(mutation.target.getAttribute('aria-valuenow'))
+      if (
+        // For each 5 seconds of playback,
+        (position > 0 && position % 5 === 0) ||
+        // or user changed the position.
+        Math.abs(lastPosition - position) > 4
+      ) {
+        GM_setValue(key, position)
+      }
+    }
+    // User changed the track.
+    else {
+      // prettier-ignore
+      isRestore = true
+      [key, position] = restorePlayback(player)
+      GM_setValue(key, position)
+    }
+    lastKey = key
+    lastPosition = position
+  }).observe(getTimeline(player), { attributes: true })
 }
 
-const player = document.body.querySelector('#app .playControls')
-observeProgress(player)
+// Waiting for the waveform's canvas to appear and load.
+new MutationObserver((_mutations, observer) => {
+  const waveform = document.body.querySelector('.waveformWrapper__waveform > .waveform')
+  if (waveform?.classList.contains('loaded')) {
+    observer.disconnect()
+    const player = document.body.querySelector('#app .playControls')
+    restorePlayback(player)
+    observePlayback(player)
+  }
+}).observe(document.body, { subtree: true, childList: true })
