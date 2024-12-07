@@ -113,13 +113,12 @@ function observePlayback(player) {
   }).observe(getTimeline(player), { attributes: true })
 }
 
-// Waiting for the waveform's canvas to appear and load.
+// Waiting for the first and only bunch of mutations on the player element.
+const player = document.body.querySelector('#app .playControls')
 new MutationObserver((_mutations, observer) => {
-  const waveform = document.body.querySelector('.waveformWrapper__waveform > .waveform')
-  if (waveform?.classList.contains('loaded')) {
-    observer.disconnect()
-    const player = document.body.querySelector('#app .playControls')
+  observer.disconnect()
+  setTimeout(() => {
     restorePlayback(player)
     observePlayback(player)
-  }
-}).observe(document.body, { subtree: true, childList: true })
+  }, 100)
+}).observe(player, { subtree: true, childList: true })
