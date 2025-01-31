@@ -120,5 +120,5 @@ new MutationObserver((_mutations, observer) => {
   setTimeout(() => {
     restorePlayback(player)
     observePlayback(player)
-  }, 100)
+  }, 1000)
 }).observe(player, { subtree: true, childList: true })
