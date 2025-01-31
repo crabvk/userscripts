@@ -2,7 +2,7 @@
 // @name        SoundCloud Restore Playback
 // @description Saves/restores playback position on SoundCloud.com
 // @namespace   https://github.com/crabvk
-// @version     0.4.0
+// @version     0.4.1
 // @author      Vyacheslav Konovalov
 // @match       https://soundcloud.com/*
 // @license     MIT
@@ -113,7 +113,7 @@ function observePlayback(player) {
   }).observe(getTimeline(player), { attributes: true })
 }
 
-// Waiting for the first and only bunch of mutations on the player element.
+// Waiting for the first bunch of mutations on the player element.
 const player = document.body.querySelector('#app .playControls')
 new MutationObserver((_mutations, observer) => {
   observer.disconnect()
