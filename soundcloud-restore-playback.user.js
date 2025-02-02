@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        SoundCloud Restore Playback
-// @description Saves/restores playback position on SoundCloud.com
+// @description Saves/restores playback position on SoundCloud (only for tracks longer than 5 minutes)
 // @namespace   https://github.com/crabvk
 // @version     0.4.1
 // @author      Vyacheslav Konovalov
