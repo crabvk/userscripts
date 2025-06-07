@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Disable video autoplay
-// @description Stops all videos playback on the page
+// @description Pauses all video playback on any webpage
 // @version     0.1.0
 // @author      Vyacheslav Konovalov
 // @license     MIT

@@ -2,26 +2,31 @@
 # UserScripts and UserStyles
 
 - [SoundCloud Restore Playback](#soundcloud-restore-playback)
+- [Disable Video Autoplay](#disable-video-autoplay)
 - [Medium Disable Popover](#medium-disable-popover)
 - [Spotify Player Compact](#spotify-player-compact)
 - [How to install user script](#how-to-install-user-script)
 - [How to install user style](#how-to-install-user-style)
 
-# SoundCloud Restore Playback
+## SoundCloud Restore Playback
 
 Saves/restores playback position on SoundCloud.com
 
 <!-- omit in toc -->
-## Features
+### Features
 
 - Save playback position for each track with duration longer than 10 minutes
 - Restore playback position on page load or track change, but not from last 30 seconds of the track
 
-# Medium Disable Popover
+## Disable Video Autoplay
+
+Pauses all video playback on any webpage.
+
+## Medium Disable Popover
 
 Disables popover (with highlight tool and tweet) for selected text and marks on Medium
 
-# Spotify Player Compact
+## Spotify Player Compact
 
 [![Install directly with Stylus](https://img.shields.io/badge/Install%20directly%20with-Stylus-00adad.svg)](https://raw.githubusercontent.com/crabvk/userscripts/master/spotify-player-compact.user.css)
 
@@ -35,13 +40,13 @@ After
 
 ![Spotify Player Compact (after)](screenshots/spotify-player-compact_after.png)
 
-# How to install user script
+## How to install user script
 
 1. Install [Violentmonkey](https://violentmonkey.github.io/get-it/) browser extension
 2. Open direct link for a script (for example https://raw.githubusercontent.com/crabvk/userscripts/master/soundcloud-restore-playback.user.js), it'll open Violentmonkey
 3. Press "Confirm installation" button
 
-# How to install user style
+## How to install user style
 
 1. Install [Stylus](https://github.com/openstyles/stylus) browser extension
 2. Open direct link for a style (for example https://raw.githubusercontent.com/crabvk/userscripts/master/spotify-player-compact.user.css), it'll open Stylus
