@@ -4,7 +4,6 @@
 - [SoundCloud Restore Playback](#soundcloud-restore-playback)
 - [Disable Video Autoplay](#disable-video-autoplay)
 - [Medium Disable Popover](#medium-disable-popover)
-- [Spotify Player Compact](#spotify-player-compact)
 - [How to install user script](#how-to-install-user-script)
 - [How to install user style](#how-to-install-user-style)
 
@@ -25,20 +24,6 @@ Pauses all video playback on any webpage.
 ## Medium Disable Popover
 
 Disables popover (with highlight tool and tweet) for selected text and marks on Medium
-
-## Spotify Player Compact
-
-[![Install directly with Stylus](https://img.shields.io/badge/Install%20directly%20with-Stylus-00adad.svg)](https://raw.githubusercontent.com/crabvk/userscripts/master/spotify-player-compact.user.css)
-
-Makes spotify player single row and changes player buttons order
-
-Before
-
-![Spotify Player Compact (before)](screenshots/spotify-player-compact_before.png)
-
-After
-
-![Spotify Player Compact (after)](screenshots/spotify-player-compact_after.png)
 
 ## How to install user script
 
