@@ -16,7 +16,11 @@ function pauseAllVideos(target) {
 
 pauseAllVideos(document)
 
-new MutationObserver((mutationList) => {
+new MutationObserver((mutationList, observer) => {
+  if (performance.now() > 3500) {
+    observer.disconnect()
+    return
+  }
   mutationList.forEach(({ target }) => {
     if (target.tagName === 'VIDEO') {
       target.pause()
