@@ -68,7 +68,7 @@ function observePlayback(player) {
 
   new MutationObserver((mutations) => {
     const mutation = mutations.findLast(
-      (m) => m.type === 'attributes' && m.attributeName === 'aria-valuenow'
+      (m) => m.type === 'attributes' && m.attributeName === 'aria-valuenow',
     )
     if (mutation === undefined) {
       return
@@ -103,9 +103,10 @@ function observePlayback(player) {
     }
     // User changed the track.
     else {
-      // prettier-ignore
       isRestore = true
-      [key, position] = restorePlayback(player)
+      const result = restorePlayback(player)
+      key = result[0]
+      position = result[1]
       GM_setValue(key, position)
     }
     lastKey = key

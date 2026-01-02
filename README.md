@@ -1,29 +1,26 @@
 <!-- omit in toc -->
+
 # UserScripts and UserStyles
 
 - [SoundCloud Restore Playback](#soundcloud-restore-playback)
-- [Disable Video Autoplay](#disable-video-autoplay)
 - [Medium Disable Popover](#medium-disable-popover)
-- [How to install user script](#how-to-install-user-script)
-- [How to install user style](#how-to-install-user-style)
+- [How to Install User Script](#how-to-install-user-script)
+- [How to Install User Style](#how-to-install-user-style)
 
 ## SoundCloud Restore Playback
 
 Saves/restores playback position on SoundCloud.com
 
 <!-- omit in toc -->
+
 ### Features
 
-- Save playback position for each track with duration longer than 10 minutes
-- Restore playback position on page load or track change, but not from last 30 seconds of the track
-
-## Disable Video Autoplay
-
-Pauses all video playback on any webpage.
+- Save playback position for each track with duration longer than 5 minutes.
+- Restore playback position on page load or track change, but not from last 30 seconds of the track.
 
 ## Medium Disable Popover
 
-Disables popover (with highlight tool and tweet) for selected text and marks on Medium
+Disables popover (with highlight tool and tweet) for selected text and marks on Medium.
 
 ## How to install user script
 
